@@ -231,4 +231,4 @@ dmypy.json
 cython_debug/
 
 /filelist/json_filelist/train.json
-/filelist/txt_filelist
+
