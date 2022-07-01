@@ -35,3 +35,11 @@ python train_timm.py --batch_size 32 --epochs 30 --class_num CLASS_NUM
 
 
 三、后期计划
+1. 将train和train_timm合并，转换为timm的格式
+2. 将predict合并，将数据读取转换为cv2 --> Image
+3. config的合并
+4. json文件生成的合并
+5. 调优
+   1. 解决数据集不平衡问题
+   2. 参考convnext的trick
+   3. 加trick
