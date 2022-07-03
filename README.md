@@ -43,3 +43,5 @@ python train_timm.py --batch_size 32 --epochs 30 --class_num CLASS_NUM
    1. 解决数据集不平衡问题
    2. 参考convnext的trick
    3. 加trick
+6. 需要使用降采样将数据集的量降低
+7. 尝试下Loss改成Focal Loss
