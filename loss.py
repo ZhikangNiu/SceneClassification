@@ -46,6 +46,37 @@ class ClassificationLosses(object):
 
     def CrossEntropyLoss(self, logit, target):
         n, c, h, w = logit.shape
+        criterion = nn.CrossEntropyLoss(
+            weight=self.weight, ignore_index=self.ignore_index,
+            size_average=self.size_average
+        )
+        if self.cuda:
+            criterion = criterion.to('cuda')
 
-    def FocalLoss(self, logit, target):
+        loss = criterion(logit, target)
+
+        if self.batch_average:
+            loss /= n
+
+        return loss
+
+    def FocalLoss(self, logit, target, gamma=2, alpha=0.5):
         n, c, h, w = logit.shape
+        criterion = nn.CrossEntropyLoss(
+            weight=self.weight, ignore_index=self.ignore_index,
+            size_average=self.size_average
+        )
+
+        if self.cuda:
+            criterion = criterion.to('cuda')
+
+        logpt = - criterion(logit, target)
+        pt = torch.exp(logpt)
+        if alpha is not None:
+            logpt *= alpha
+        loss = -((1 - pt) ** gamma) * logpt
+
+        if self.batch_average:
+            loss /= n
+
+        return loss
