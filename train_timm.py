@@ -13,13 +13,11 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader
-from torchvision.models import mobilenet_v3_small, mobilenet_v3_large, squeezenet1_1, squeezenet1_0
-#from dataset import MyDataset
-from ghostnet import ghostnet
+from torchvision.models import mobilenet_v3_small, mobilenet_v3_large
 from torch.utils.tensorboard import SummaryWriter
 import logging
 import warnings
-from dataset_json import MyDataset
+from dataset import JsonDataset
 warnings.filterwarnings('ignore')
 
 # 超参数的设置
@@ -81,13 +79,6 @@ def get_model(model_choice=0):
         model.classifier[3] = nn.Linear(in_features=1280, out_features=CLASS_NUM, bias=True)
     elif model_choice == 2:
         model = timm.create_model("mobilenetv3_large_100",num_classes=CLASS_NUM,pretrained=True)
-    elif model_choice == 3:
-        model = squeezenet1_1(pretrained=True)
-        model.classifier[1] = nn.Conv2d(512, CLASS_NUM, kernel_size=(1, 1), stride=(1, 1))
-    elif model_choice == 4:
-        model = ghostnet()
-        model.load_state_dict(torch.load('./checkpoint/state_dict_73.98.pth'))
-        model.classifier = nn.Linear(1280,CLASS_NUM)
     return model
 
 
@@ -99,7 +90,7 @@ def train(epoch, model):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
-    train_dataset = MyDataset(TRAIN_JSON_PATH,TRAIN_IMAGE_PATH,train_process)
+    train_dataset = JsonDataset(TRAIN_JSON_PATH,TRAIN_IMAGE_PATH,train_process)
     #train_dataset = ImageFolder(TRAIN_PATH, transform=train_process)
     train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=8,shuffle=True)
 
@@ -127,7 +118,7 @@ def val(epoch, model):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
-    val_dataset = MyDataset(VAL_JSON_PATH,VAL_IMAGE_PATH,transform=val_process)
+    val_dataset = JsonDataset(VAL_JSON_PATH,VAL_IMAGE_PATH,transform=val_process)
     val_dataloader = DataLoader(val_dataset,batch_size=32,shuffle=False)
     #val_dataset = MyDataset(VAL_FILE_PATH, VAL_PATH, val_process)
     #val_dataloader = DataLoader(val_dataset, batch_size=32, num_workers=8,shuffle=False)

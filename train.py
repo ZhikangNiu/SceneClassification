@@ -17,8 +17,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader
 from torchvision.models import mobilenet_v3_small, mobilenet_v3_large, squeezenet1_1, squeezenet1_0
-from dataset import MyDataset
-from ghostnet import ghostnet
+from dataset import JsonDataset
 from torch.utils.tensorboard import SummaryWriter
 import logging
 import warnings
