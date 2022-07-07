@@ -3,6 +3,7 @@
 # @Author  : Zhikang Niu
 # @FileName: acc_level2.py
 # @Software: PyCharm
+from typing import Tuple
 
 from PIL import Image
 import random
@@ -36,6 +37,14 @@ class Predicter():
         torch.backends.cudnn.deterministic = True
 
     def img_load(self, img_path: str) -> Tensor:
+        """
+
+        Args:
+            img_path: 图片的路径
+
+        Returns:
+            x: 返回图片的张量格式
+        """
         # TODO: 看下opencv奇奇怪怪的问题
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = Image.open(img_path).convert("RGB")
@@ -50,7 +59,17 @@ class Predicter():
 
     def scene_classify(self,
                        img_path: str,
-                       threshold: float = 0.6) -> dict:
+                       threshold: float = 0.6) -> Tuple[int, float]:
+        """
+
+        Args:
+            img_path: 传入的图片路径参数
+            threshold: 阈值，默认值为0.6
+
+        Returns:
+            label_index: 预测的标签的索引
+            score: 预测的得分
+        """
         x = self.img_load(img_path=img_path)
         output = self.model(x)
         probability = F.softmax(output, dim=1)
