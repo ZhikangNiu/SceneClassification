@@ -3,7 +3,7 @@
 # @Author  : Zhikang Niu
 # @FileName: acc_level2.py
 # @Software: PyCharm
-from typing import Tuple
+from typing import Tuple, Dict
 
 from PIL import Image
 import random
@@ -59,7 +59,7 @@ class Predicter():
 
     def scene_classify(self,
                        img_path: str,
-                       threshold: float = 0.6) -> Tuple[int, float]:
+                       threshold: float = 0.6) -> Dict:
         """
 
         Args:
@@ -67,8 +67,10 @@ class Predicter():
             threshold: 阈值，默认值为0.6
 
         Returns:
-            label_index: 预测的标签的索引
-            score: 预测的得分
+            {
+                label_index: 预测的标签的索引
+                score: 预测的得分
+            }
         """
         x = self.img_load(img_path=img_path)
         output = self.model(x)
@@ -79,13 +81,16 @@ class Predicter():
         if prob < threshold:
             label_index = 25
 
-        return label_index, score
+        result_dict = {label_index: score}
+
+        return result_dict
 
 
 if __name__ == '__main__':
     img = Image.open('./test.png')
     scene_predicter = Predicter()
-    index, prob = scene_predicter.scene_classify("./test.png")
-    print(index)
-    print(prob)
+    #index, prob = scene_predicter.scene_classify("./test.png")
+    result = scene_predicter.scene_classify("./test.png")
+    print(result)
+
     # TODO: 修改下读取同片的方式，png格式是32位读取，而jpg是24位深度的
